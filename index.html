@@ -1,220 +1,451 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#060910"/>
+  <title>Virendra Pandey — Stock Market Education</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Meta Pixel -->
+  <script>
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;
+  s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,
+  'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init','862344290075403');fbq('track','PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=862344290075403&ev=PageView&noscript=1"/></noscript>
 
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-
-    body{
-      font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#0f172a,#1e293b);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#0f172a;
+    :root {
+      --bg:        #060910;
+      --surface:   #0c1018;
+      --surface-2: #111620;
+      --surface-3: #161c28;
+      --emerald:   #10b981;
+      --emerald-d: #059669;
+      --emerald-glow: rgba(16,185,129,0.12);
+      --emerald-border: rgba(16,185,129,0.22);
+      --gold:      #e2b96a;
+      --gold-dim:  rgba(226,185,106,0.1);
+      --text:      #eef0f3;
+      --muted:     #7e8899;
+      --muted-2:   #454e5f;
+      --line:      rgba(255,255,255,0.065);
     }
 
-    .card{
-      width:100%;
-      max-width:430px;
-      background:#ffffff;
-      border-radius:24px;
-      padding:32px 26px;
-      text-align:center;
-      box-shadow:0 30px 80px rgba(0,0,0,0.25);
-      animation:fadeUp .8s ease forwards;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html, body { min-height: 100%; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
     }
 
-    @keyframes fadeUp{
-      from{opacity:0;transform:translateY(30px) scale(.96)}
-      to{opacity:1;transform:none}
+    /* ── CANVAS ─────────────────────────── */
+    .canvas {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 16px 36px;
+      position: relative;
     }
 
-    .logo{
-      width:72px;
-      height:72px;
-      margin:0 auto 18px;
-      border-radius:50%;
-      overflow:hidden;
-      box-shadow:0 8px 18px rgba(0,0,0,.15);
+    /* Ambient background blobs */
+    .canvas::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 600px 400px at 80% 0%, rgba(16,185,129,0.06) 0%, transparent 65%),
+        radial-gradient(ellipse 500px 400px at 5% 80%,  rgba(16,185,129,0.04) 0%, transparent 65%);
     }
 
-    .logo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
+    /* Fine grain */
+    .canvas::after {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      opacity: 0.6;
     }
 
-    h1{
-      font-size:24px;
-      font-weight:700;
-      margin-bottom:6px;
+    /* ── CARD ────────────────────────────── */
+    .card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 460px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.03) inset,
+        0 40px 100px rgba(0,0,0,0.7),
+        0 0 80px rgba(16,185,129,0.06);
+      animation: rise 0.7s cubic-bezier(0.22,1,0.36,1) both;
     }
 
-    .subtitle{
-      font-size:13px;
-      color:#64748b;
-      margin-bottom:22px;
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: none; }
     }
 
-    .features{
-      list-style:none;
-      margin:20px 0;
-      text-align:left;
+    /* ── HERO ────────────────────────────── */
+    .hero {
+      padding: 32px 24px 26px;
+      background: linear-gradient(160deg, #0e1520 0%, #090d15 100%);
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .features li{
-      font-size:14px;
-      margin-bottom:12px;
-      display:flex;
-      gap:8px;
-      align-items:flex-start;
+    /* Decorative grid lines */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none; z-index: 0;
+      background-image:
+        linear-gradient(rgba(16,185,129,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(16,185,129,0.04) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
     }
 
-    .cta{
-      display:block;
-      margin-top:18px;
-      background:linear-gradient(135deg,#2563eb,#1d4ed8);
-      color:#fff;
-      text-decoration:none;
-      padding:15px;
-      border-radius:14px;
-      font-weight:600;
-      font-size:15px;
-      transition:.25s ease;
-      box-shadow:0 12px 30px rgba(37,99,235,.35);
+    .hero-content { position: relative; z-index: 1; }
+
+    /* Seat counter chip */
+    .seats-chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 20px;
+      background: rgba(16,185,129,0.1); border: 1px solid var(--emerald-border);
+      font-size: 11.5px; font-weight: 600; color: var(--emerald);
+      letter-spacing: 0.04em;
+    }
+    .dot-green {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--emerald);
+      animation: blink 1.5s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* Avatar */
+    .avatar-wrap {
+      position: relative; width: 88px; height: 88px; margin: 0 auto 16px;
+    }
+    .avatar-ring {
+      position: absolute; inset: -4px; border-radius: 50%;
+      border: 1.5px solid transparent;
+      background: linear-gradient(135deg, var(--emerald), rgba(16,185,129,0.1)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+    }
+    .avatar {
+      width: 88px; height: 88px; border-radius: 50%; object-fit: cover; display: block;
+      border: 2px solid rgba(255,255,255,0.06);
+    }
+    .avatar-badge {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--emerald); border: 2.5px solid var(--surface);
+      display: grid; place-items: center; font-size: 10px;
     }
 
-    .cta:hover{
-      transform:translateY(-2px);
-      box-shadow:0 16px 36px rgba(37,99,235,.45);
+    .name {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 800;
+      color: var(--text); line-height: 1.15; margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .tagline {
+      font-size: 13px; color: var(--muted); font-weight: 400; line-height: 1.55;
+      max-width: 300px; margin: 0 auto 20px;
     }
 
-    .note{
-      font-size:11px;
-      color:#64748b;
-      margin-top:14px;
-      line-height:1.5;
+    /* Stat pills */
+    .stats-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .stat-pill {
+      padding: 6px 12px; border-radius: 999px;
+      background: var(--surface-3); border: 1px solid var(--line);
+      font-size: 11.5px; font-weight: 600; color: var(--muted);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .stat-pill b { color: var(--text); }
+
+    /* ── TIMER ───────────────────────────── */
+    .timer-section {
+      background: linear-gradient(90deg, rgba(16,185,129,0.08), rgba(16,185,129,0.04));
+      border-bottom: 1px solid var(--emerald-border);
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .timer-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .timer-count { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--emerald); letter-spacing: 0.02em; }
+    .timer-note  { font-size: 11px; color: var(--muted-2); margin-top: 1px; }
+
+    /* ── CURRICULUM ──────────────────────── */
+    .section { padding: 22px 24px; border-bottom: 1px solid var(--line); }
+
+    .sec-label {
+      font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.15em;
+      text-transform: uppercase; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .sec-label::after {
+      content: ''; flex: 1; height: 1px; background: var(--line);
     }
 
-    .footer{
-      margin-top:22px;
-      font-size:11px;
-      color:#94a3b8;
-      line-height:1.7;
+    .curriculum { display: flex; flex-direction: column; gap: 10px; }
+
+    .curr-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 13px 14px; border-radius: 14px;
+      background: var(--surface-2); border: 1px solid var(--line);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .curr-item:hover { background: var(--surface-3); border-color: var(--emerald-border); }
+
+    .curr-icon {
+      width: 34px; height: 34px; border-radius: 10px; flex: 0 0 auto;
+      background: var(--emerald-glow); border: 1px solid var(--emerald-border);
+      display: grid; place-items: center; font-size: 15px;
+    }
+    .curr-text { flex: 1; }
+    .curr-title { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+    .curr-desc  { font-size: 11.5px; color: var(--muted); margin-top: 3px; line-height: 1.45; }
+    .curr-check { color: var(--emerald); font-size: 14px; margin-top: 2px; }
+
+    /* ── TRUST BAR ───────────────────────── */
+    .trust-bar {
+      padding: 16px 24px;
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 10px; border-bottom: 1px solid var(--line);
+    }
+    .trust-item {
+      text-align: center; padding: 12px 8px; border-radius: 12px;
+      background: var(--surface-2); border: 1px solid var(--line);
+    }
+    .trust-icon { font-size: 18px; margin-bottom: 5px; }
+    .trust-val  { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1; }
+    .trust-lbl  { font-size: 10.5px; color: var(--muted); margin-top: 3px; }
+
+    /* ── CTA ─────────────────────────────── */
+    .cta-section { padding: 22px 24px 20px; }
+
+    .cta-btn {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      width: 100%; padding: 17px 20px; border-radius: 16px;
+      background: linear-gradient(135deg, #12c98e, var(--emerald), var(--emerald-d));
+      color: #021a10; text-decoration: none;
+      font-size: 15.5px; font-weight: 700; letter-spacing: 0.01em;
+      box-shadow: 0 8px 30px rgba(16,185,129,0.38), 0 2px 8px rgba(0,0,0,0.5);
+      position: relative; overflow: hidden;
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.16) 0%, transparent 55%);
+    }
+    .cta-btn:active { transform: scale(0.98); box-shadow: 0 4px 16px rgba(16,185,129,0.3); }
+
+    .cta-sub {
+      text-align: center; margin-top: 10px;
+      font-size: 12px; color: var(--muted-2); line-height: 1.6;
     }
 
-    .footer a{
-      color:#2563eb;
-      text-decoration:none;
-      font-weight:500;
+    /* ── FOOTER ──────────────────────────── */
+    .footer {
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--line);
+      background: rgba(0,0,0,0.2);
     }
-
-    @media (max-width:420px){
-      .card{padding:26px 18px}
+    .footer-links {
+      display: flex; justify-content: center; gap: 16px;
+      font-size: 11px; margin-bottom: 8px;
     }
+    .footer-links a {
+      color: var(--muted-2); text-decoration: none; font-weight: 500;
+      transition: color 0.15s;
+    }
+    .footer-links a:hover { color: var(--emerald); }
+    .footer-managed {
+      text-align: center; font-size: 11px; color: var(--muted-2); margin-bottom: 6px;
+    }
+    .footer-managed a { color: var(--muted); text-decoration: none; font-weight: 600; }
+    .footer-disclaimer { text-align: center; font-size: 10.5px; color: #333c4e; line-height: 1.6; }
   </style>
-  
- <!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '862344290075403');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=862344290075403&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code -->
-
 </head>
-
 <body>
 
+<div class="canvas">
   <div class="card">
 
-    <div class="logo">
-      <img src="viru.jpg" alt="Wolf Trading Logo">
+    <!-- ── HERO ── -->
+    <div class="hero">
+      <div class="hero-content">
+
+        <div class="seats-chip">
+          <div class="dot-green"></div>
+          Limited Seats — Enrolment Open
+        </div>
+
+        <div class="avatar-wrap">
+          <div class="avatar-ring"></div>
+          <img class="avatar" src="viru.jpg" alt="Virendra Pandey"/>
+          <div class="avatar-badge">✓</div>
+        </div>
+
+        <h1 class="name">Virendra Pandey</h1>
+        <p class="tagline">Professional Stock Market Education — rule-based, practical, and free from hype.</p>
+
+        <div class="stats-row">
+          <div class="stat-pill"><b>100%</b> Educational</div>
+          <div class="stat-pill"><b>No</b> Signals</div>
+          <div class="stat-pill"><b>Live</b> Charts</div>
+        </div>
+
+      </div>
     </div>
 
-    <h1>Virendra Pandey</h1>
-    <div class="subtitle">Professional Stock Market Education — Limited Seats Open</div>
-
-    <ul class="features">
-      <li>✔ Step‑by‑step understanding of real stock market structure</li>
-      <li>✔ Beginner‑friendly rule‑based learning system</li>
-      <li>✔ Practical live chart explanations for clarity</li>
-      <li>✔ Focused and disciplined learning community</li>
-      <li>✔ Strictly educational — no signals, no hype, no false promises</li>
-    </ul>
-
-    <a href="https://t.me/+QNJjXZgZSeU3OWQ1" target="_blank" class="cta" onclick="fbq('track','Subscribe')">
-      Join Now Telegram for more Updates
-    </a>
-
-    <div class="note">
-      ⚠️ Entry is limited to maintain learning quality. Access may close anytime once the group capacity is reached.
+    <!-- ── TIMER ── -->
+    <div class="timer-section">
+      <div>
+        <div class="timer-label">Free access closing in</div>
+        <div class="timer-note">Resets daily at midnight</div>
+      </div>
+      <div class="timer-count" id="timerEl">--h --m --s</div>
     </div>
 
+    <!-- ── CURRICULUM ── -->
+    <div class="section">
+      <div class="sec-label">What You'll Learn</div>
+      <div class="curriculum">
+
+        <div class="curr-item">
+          <div class="curr-icon">📊</div>
+          <div class="curr-text">
+            <div class="curr-title">Real Market Structure</div>
+            <div class="curr-desc">Step-by-step understanding of how the stock market actually works</div>
+          </div>
+          <div class="curr-check">✓</div>
+        </div>
+
+        <div class="curr-item">
+          <div class="curr-icon">📐</div>
+          <div class="curr-text">
+            <div class="curr-title">Rule-Based Learning System</div>
+            <div class="curr-desc">Beginner-friendly, structured framework to build real discipline</div>
+          </div>
+          <div class="curr-check">✓</div>
+        </div>
+
+        <div class="curr-item">
+          <div class="curr-icon">📈</div>
+          <div class="curr-text">
+            <div class="curr-title">Live Chart Analysis</div>
+            <div class="curr-desc">Practical explanations using real charts for deeper clarity</div>
+          </div>
+          <div class="curr-check">✓</div>
+        </div>
+
+        <div class="curr-item">
+          <div class="curr-icon">🎯</div>
+          <div class="curr-text">
+            <div class="curr-title">Focused Learning Community</div>
+            <div class="curr-desc">Disciplined group environment — quality over quantity</div>
+          </div>
+          <div class="curr-check">✓</div>
+        </div>
+
+        <div class="curr-item">
+          <div class="curr-icon">🚫</div>
+          <div class="curr-text">
+            <div class="curr-title">Zero Hype. Zero False Promises.</div>
+            <div class="curr-desc">Strictly educational — no tips, no signals, no shortcuts</div>
+          </div>
+          <div class="curr-check">✓</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── TRUST BAR ── -->
+    <div class="trust-bar">
+      <div class="trust-item">
+        <div class="trust-icon">🏫</div>
+        <div class="trust-val">Edu Only</div>
+        <div class="trust-lbl">No signals</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">📉</div>
+        <div class="trust-val">Live Charts</div>
+        <div class="trust-lbl">Real examples</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">⚠️</div>
+        <div class="trust-val">Limited</div>
+        <div class="trust-lbl">Seats available</div>
+      </div>
+    </div>
+
+    <!-- ── CTA ── -->
+    <div class="cta-section">
+      <a
+        class="cta-btn"
+        href="https://t.me/+QNJjXZgZSeU3OWQ1"
+        target="_blank"
+        onclick="fbq('track','Subscribe')"
+      >
+        <span>Join on Telegram</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <p class="cta-sub">
+        ⚠️ Access may close once the group capacity is reached.<br>Join now to secure your seat.
+      </p>
+    </div>
+
+    <!-- ── FOOTER ── -->
     <div class="footer">
-      <div>
-        <a href="https://elitepips.online/terms/">Terms</a> |
-        <a href="https://elitepips.online/privacy/">Privacy</a> |
-        <a href="https://elitepips.online/disclaimer/">Disclaimer</a>
+      <div class="footer-links">
+        <a href="https://elitepips.online/terms/" target="_blank">Terms</a>
+        <a href="https://elitepips.online/privacy/" target="_blank">Privacy</a>
+        <a href="https://elitepips.online/disclaimer/" target="_blank">Disclaimer</a>
       </div>
-      <div>
-        Managed by <a href="https://t.me/+dAEagvqNHo45ZGI1" target="_blank"><strong>ShriRam Media</strong></a>
+      <div class="footer-managed">
+        Managed by <a href="https://t.me/+dAEagvqNHo45ZGI1" target="_blank">ShriRam Media</a>
       </div>
-      <div>
-        This page is not associated with Meta Platforms, Inc.
-      </div>
-    </div>
-      </div>
-    </div>
+      <div class="footer-disclaimer">
+        This page is not associated with Meta Platforms, Inc.<br>
+        Stock market investments involve risk. This content is strictly educational.
       </div>
     </div>
 
   </div>
+</div>
 
-  <script>
-    // Live countdown timer (resets every 24 hours)
-    const note = document.querySelector('.note');
-    const timerEl = document.createElement('div');
-    timerEl.style.fontSize = '13px';
-    timerEl.style.fontWeight = '600';
-    timerEl.style.color = '#dc2626';
-    timerEl.style.marginTop = '10px';
-
-    note.parentNode.insertBefore(timerEl, note);
-
-    function updateTimer(){
-      const now = new Date();
-      const end = new Date();
-      end.setHours(23,59,59,999);
-      const diff = end - now;
-
-      const h = Math.floor(diff / (1000*60*60));
-      const m = Math.floor((diff / (1000*60)) % 60);
-      const s = Math.floor((diff / 1000) % 60);
-
-      timerEl.textContent = `⏳ Free access closing in ${h}h ${m}m ${s}s`;
-    }
-
-    setInterval(updateTimer, 1000);
-    updateTimer();
-  </script>
+<script>
+(function(){
+  // Countdown timer to end of day
+  const timerEl = document.getElementById('timerEl');
+  function update(){
+    const now = new Date();
+    const end = new Date(); end.setHours(23,59,59,999);
+    const diff = end - now;
+    const h = String(Math.floor(diff / 3.6e6)).padStart(2,'0');
+    const m = String(Math.floor((diff % 3.6e6) / 6e4)).padStart(2,'0');
+    const s = String(Math.floor((diff % 6e4) / 1000)).padStart(2,'0');
+    timerEl.textContent = h + 'h ' + m + 'm ' + s + 's';
+  }
+  setInterval(update, 1000);
+  update();
+})();
+</script>
 
 </body>
 </html>
